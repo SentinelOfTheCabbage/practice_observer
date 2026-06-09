@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"observer/server"
 )
 
 func runServer(mux *http.ServeMux) {
@@ -14,6 +13,6 @@ func runServer(mux *http.ServeMux) {
 
 func main() {
 	mux := http.NewServeMux()
-	server.SetHandlers(mux)
+	SetHandlers(mux)
 	runServer(mux)
 }

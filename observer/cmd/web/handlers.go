@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"fmt"
@@ -9,7 +9,14 @@ import (
 
 func home(response http.ResponseWriter, request *http.Request) {
 	log.Printf("`%s` request to `%s` was received.", request.Method, request.Host)
-	id, err := strconv.Atoi(request.URL.Query().Get("page"))
+
+	page := request.URL.Query().Get("page")
+	if page == "" {
+		fmt.Fprintf(response, "Hi mate! It's main page afaik.")
+		return
+	}
+
+	id, err := strconv.Atoi(page)
 	if err != nil || id < 0 {
 		http.NotFound(response, request)
 		return
