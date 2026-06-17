@@ -10,5 +10,6 @@ RUN go mod download
 COPY . .
 RUN go build -o executable ./cmd/web
 
-EXPOSE 4000
+COPY .env /app
+EXPOSE ${APP_PORT}
 CMD ["./executable"]

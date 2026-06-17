@@ -1,13 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"observer/pkg/env"
+	"os"
 )
 
 func runServer(mux *http.ServeMux) {
-	log.Print("Starting server on :4000")
-	err := http.ListenAndServe(":4000", mux)
+	env.GetEnv()
+	port := fmt.Sprintf(":%s", os.Getenv("APP_PORT"))
+	log.Printf("Starting server on %s", port)
+	err := http.ListenAndServe(port, mux)
+
 	log.Fatal(err)
 }
 
