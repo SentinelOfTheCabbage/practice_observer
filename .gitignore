@@ -1,4 +1,7 @@
 *code-workspace
 *.md
-.*
+.py*
+.v*
+.D*
+*.env
 *.lnk
