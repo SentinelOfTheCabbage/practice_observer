@@ -31,3 +31,7 @@ test:
 	$(MAKE) _start_test
 	pytest tests
 	$(MAKE) _stop_test
+
+_github_test_runner:
+	mkdir ../logs
+	pytest tests --tb=line > ../logs/pytest_output.txt

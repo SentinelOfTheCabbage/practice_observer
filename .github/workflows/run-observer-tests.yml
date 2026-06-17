@@ -1,0 +1,35 @@
+name: run-observer-tests
+run-name: Run observer tests
+on: [push]
+jobs:
+  run-observer-tests:
+    runs-on: ubuntu-latest
+    environment: main
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup docker
+        uses: docker/setup-buildx-action@v3
+      - name: Setup .env
+        run: |
+          echo "DOCKER_PORT=${{ secrets.DOCKER_PORT }}" >> ./observer/.env
+          echo "APP_PORT=${{ secrets.APP_PORT }}" >> ./observer/.env
+      - name: Install Python3 requirements
+        run: python3 -m pip install -r requirements.txt
+      - name: Build Service
+        run: make observer build
+      - name: Run detached service
+        run: make observer _start_test
+      - name: Run tests
+        run: make observer _github_test_runner
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: |
+            logs/
+            pytest_output.txt
+      - name: Stop detached service
+        if: always()
+        run: make observer _stop_test
+    
