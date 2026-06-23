@@ -1,7 +1,5 @@
 include .env
 
-APP_NAME := myapp
-TEST_CONTAINER := test-container
 REBUILD := $(findstring R,$(MAKEFLAGS))
 
 ifeq ($(REBUILD),R)
