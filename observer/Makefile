@@ -17,19 +17,6 @@ run:
 
 dev: build run
 
-_start_test:
-	docker run --rm -d -p $(DOCKER_PORT):$(APP_PORT) --name $(TEST_CONTAINER) $(APP_NAME):latest
-
-_stop_test:
-	docker rm -f $(TEST_CONTAINER)
-
 test:
-	$(MAKE) _stop_test
-	$(BUILD_CMD)
-	$(MAKE) _start_test
-	pytest tests
-	$(MAKE) _stop_test
-
-_github_test_runner:
-	mkdir ../logs
-	pytest tests --tb=line > ../logs/pytest_output.txt
+	mkdir -p ../logs
+	go test ./tests > ../logs/tests.log
