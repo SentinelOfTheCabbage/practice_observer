@@ -1,7 +1,20 @@
+# Workspace
 *code-workspace
-*.md
-.py*
-.v*
-.D*
+.vscode
+
+# System folders
+.DS_Store
+
+# Environment
 *.env
+
+# Python service files
+.py*
+
+# Configs
+*config.yaml
+!config.example.yaml
+
+# Other
 *.lnk
+*.md
