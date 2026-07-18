@@ -28,14 +28,14 @@ func home(response http.ResponseWriter, request *http.Request) {
 func snippet_page(response http.ResponseWriter, request *http.Request) {
 	log.Printf("%s request to snippet page", request.Method)
 
-	if request.Method != "POST" {
-		response.Header().Set("Allow", "POST")
-		const err_msg string = "snippet can only be POST'ed."
-		http.Error(response, err_msg, http.StatusMethodNotAllowed)
+	if request.Method == "POST" {
+		fmt.Fprintf(response, "welcome to the snippet page!")
 		return
 	}
 
-	fmt.Fprintf(response, "welcome to the snippet page!")
+	response.Header().Set("Allow", "POST")
+	const err_msg string = "snippet can only be POST'ed."
+	http.Error(response, err_msg, http.StatusMethodNotAllowed)
 }
 
 func SetHandlers(mux *http.ServeMux) {

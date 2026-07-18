@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"observer/pkg/env"
 	"os"
 	"testing"
+
+	"observer/pkg/env"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -28,16 +29,19 @@ func TestMain(m *testing.M) {
 
 	ctx := context.Background()
 
-	container, _ := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+	container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
 		ContainerRequest: testcontainers.ContainerRequest{
 			Image:        fmt.Sprintf("%s:latest", appName),
 			ExposedPorts: []string{fmt.Sprintf("%s/tcp", appPort)}, // container port only
 			WaitingFor:   wait.ForListeningPort(fmt.Sprintf("%s/tcp", appPort)),
+			AutoRemove:   true,
 		},
 		Started: true,
 	})
 	testContainer = container
-
+	if err != nil {
+		panic("Can't run Docker container. Probably Docker core isn't run.")
+	}
 	mappedPort, _ := container.MappedPort(ctx, appPort)
 	baseUrl = fmt.Sprintf("http://localhost:%s", mappedPort.Port())
 

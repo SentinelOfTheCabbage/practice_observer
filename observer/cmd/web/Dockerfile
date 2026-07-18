@@ -1,15 +1,18 @@
-FROM golang:1.26
-
-LABEL maintainer=SentinelOfTheCabbage
-
+FROM golang:1.26 AS build-stage
 WORKDIR /app
 
-COPY ../../go.mod .
+COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN go build -o executable ./cmd/web
+RUN CGO_ENABLED=0 go build -o executable ./cmd/web
 
-COPY .env /app
+FROM alpine:3.20
+LABEL maintainer=SentinelOfTheCabbage
+WORKDIR /app
+
+COPY .env /app/.env
+
+COPY --from=build-stage /app/executable ./executable
 EXPOSE ${APP_PORT}
 CMD ["./executable"]
