@@ -11,7 +11,7 @@ type Env struct {
 	APP_PORT int
 }
 
-func GetEnv() {
+func getEnv(base_folder string) error {
 	root, err := os.Getwd()
 
 	if err != nil {
@@ -22,9 +22,23 @@ func GetEnv() {
 		root = filepath.Dir(root)
 	}
 
-	envPath := filepath.Join(root, ".env")
+	envPath := filepath.Join(root, base_folder, ".env")
 
 	if err := godotenv.Load(envPath); err != nil {
-		panic("No .env file")
+		return err
 	}
+	return nil
+}
+func GetEnv() {
+	var err error
+	err = getEnv(".")
+	if err == nil {
+		return
+	}
+
+	err = getEnv("../..")
+	if err == nil {
+		return
+	}
+	panic(err)
 }
