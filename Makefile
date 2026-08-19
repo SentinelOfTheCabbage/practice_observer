@@ -1,7 +1,11 @@
-.PHONY: observer
+.PHONY: checker
+.PHONY: web
 
-observer:
-	$(MAKE) -C observer $(filter-out $@,$(MAKECMDGOALS))
+checker:
+	$(MAKE) -C observer $(MAKECMDGOALS)
+
+web:
+	$(MAKE) -C observer/cmd/web $(filter-out $@,$(MAKECMDGOALS))
 
 format:
 	black ./observer/tests

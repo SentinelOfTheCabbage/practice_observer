@@ -1,5 +1,8 @@
 include .env
 
+.PHONY: checker
+.PHONY: web
+
 REBUILD := $(findstring R,$(MAKEFLAGS))
 
 ifeq ($(REBUILD),R)
@@ -8,14 +11,14 @@ else
     BUILD_CMD := @echo "⏭️  Skipping rebuild (use make -R to force rebuild)"
 endif
 
-build: 
-	docker build -t $(APP_NAME) -f ./cmd/web/Dockerfile .
 
-run:
-	@echo "Check service on http://localhost:$(DOCKER_PORT)\n"
-	docker run --rm -p $(DOCKER_PORT):$(APP_PORT) $(APP_NAME):latest
+%:
+	@:
 
-dev: build run
+checker:
+	$(MAKE) -f cmd/checker/Makefile $(filter-out $@,$(MAKECMDGOALS))
+web:
+	$(MAKE) -f cmd/web/Makefile $(filter-out $@,$(MAKECMDGOALS))
 
 test:
 	mkdir -p ../logs
