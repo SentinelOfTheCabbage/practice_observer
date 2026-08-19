@@ -29,6 +29,7 @@ func getEnv(base_folder string) error {
 	}
 	return nil
 }
+
 func GetEnv() {
 	var err error
 	err = getEnv(".")
