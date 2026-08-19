@@ -1,0 +1,7 @@
+urls_to_check:
+    - example.net # only URI except of protocol and port.
+
+protocols:
+  - HTTPS
+
+sleep_ms: 5000

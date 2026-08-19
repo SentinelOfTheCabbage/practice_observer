@@ -29,11 +29,11 @@ type BaseRequestor struct{}
 
 var emptyResult = RequestResult{Timing: time.Nanosecond, ResponseStatus: ResponseStatus{IsSuccess: false, StatusCode: -1}}
 
-func isPortOpen(host string, port Port, protocol string, timeout time.Duration) (bool, time.Duration) {
+func isPortOpen(host string, port Port, protocol Protocol, timeout time.Duration) (bool, time.Duration) {
 	address := net.JoinHostPort(host, fmt.Sprintf("%d", port))
 
 	start_at := time.Now()
-	conn, err := net.DialTimeout(protocol, address, timeout)
+	conn, err := net.DialTimeout(string(protocol), address, timeout)
 	if err != nil {
 		return false, 0
 	}
@@ -43,7 +43,7 @@ func isPortOpen(host string, port Port, protocol string, timeout time.Duration) 
 
 func doTransportProtocolCheck(host string, protocol Protocol) (RequestResult, error) {
 	for _, port := range TransportProtocolPorts[protocol] {
-		is_open, timing := isPortOpen(host, port, TransportProtocolStr[protocol], 10*time.Second)
+		is_open, timing := isPortOpen(host, port, protocol, 10*time.Second)
 		if is_open {
 			return RequestResult{timing, ResponseStatus{true, 0}},
 				nil
@@ -51,7 +51,7 @@ func doTransportProtocolCheck(host string, protocol Protocol) (RequestResult, er
 	}
 
 	return RequestResult{time.Duration(-1), ResponseStatus{false, 0}},
-		RequestorError{fmt.Sprintf("chosen ports are closed for %s", TransportProtocolStr[protocol])}
+		RequestorError{fmt.Sprintf("chosen ports are closed for %s", protocol)}
 }
 
 func doTransferProtocolCheck(host string, protocol Protocol) (RequestResult, error) {
@@ -59,7 +59,7 @@ func doTransferProtocolCheck(host string, protocol Protocol) (RequestResult, err
 	url := fmt.Sprintf("%s%s", prefix, host)
 	start_at := time.Now()
 	resp, err := http.Get(url)
-	return RequestResult{time.Since(start_at), ResponseStatus{err == nil, resp.StatusCode}}, nil
+	return RequestResult{time.Since(start_at), ResponseStatus{err == err, resp.StatusCode}}, nil
 }
 
 func (req BaseRequestor) DoICMP(host string) (RequestResult, error) {
